@@ -120,14 +120,44 @@ def task_2_example():
             cpu.add_x(v)
         else:
             raise ValueError
-
     cpu.crt.draw_screen()
 
-    return cpu.signal_sum
+def task_2():
+    path = "data/day10.txt"
+    cpu = CPU(signal_strength=20, crt=CRT())
+    for line in open(path):
+        args = line.split()
+        if args[0] == 'noop':
+            cpu.noop()
+        elif args[0] == "addx":
+            v = int(args[1])
+            cpu.add_x(v)
+        else:
+            raise ValueError
+
+    cpu.crt.draw_screen()
 
 
 if __name__ == '__main__':
     assert small_example() == -1
     assert larger_problem() == 13140
     assert day_10_task_1() == 16480
+    """
     task_2_example()
+    ##..##..##..##..##..##..##..##..##..##..
+    ###...###...###...###...###...###...###.
+    ####....####....####....####....####....
+    #####.....#####.....#####.....#####.....
+    ######......######......######......####
+    #######.......#######.......#######.....
+    """
+    task_2()
+    """
+    ###..#....####.####.#..#.#....###..###..
+    #..#.#....#....#....#..#.#....#..#.#..#.
+    #..#.#....###..###..#..#.#....#..#.###..
+    ###..#....#....#....#..#.#....###..#..#.
+    #....#....#....#....#..#.#....#....#..#.
+    #....####.####.#.....##..####.#....###..
+    """
+    print("PLEFULPB")
