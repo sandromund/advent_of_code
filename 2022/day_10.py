@@ -48,47 +48,30 @@ class CPU:
                 if self.add_x_cycle == 0:
                     self.x += self.add_x_value
 
+    def run(self, file_path):
+        for line in open(file_path):
+            args = line.split()
+            if args[0] == 'noop':
+                self.noop()
+            elif args[0] == "addx":
+                v = int(args[1])
+                self.add_x(v)
+            else:
+                raise ValueError
 
 def small_example():
-    path = "data/day10_small.txt"
     cpu = CPU()
-    for line in open(path):
-        args = line.split()
-        if args[0] == 'noop':
-            cpu.noop()
-        elif args[0] == "addx":
-            v = int(args[1])
-            cpu.add_x(v)
-        else:
-            raise ValueError
+    cpu.run(file_path="data/day10_small.txt")
     return cpu.x
 
 def larger_problem():
-    path = "data/day10_test.txt"
     cpu = CPU(signal_strength=20)
-    for line in open(path):
-        args = line.split()
-        if args[0] == 'noop':
-            cpu.noop()
-        elif args[0] == "addx":
-            v = int(args[1])
-            cpu.add_x(v)
-        else:
-            raise ValueError
+    cpu.run(file_path="data/day10_test.txt")
     return cpu.signal_sum
 
 def day_10_task_1():
-    path = "data/day10.txt"
     cpu = CPU(signal_strength=20)
-    for line in open(path):
-        args = line.split()
-        if args[0] == 'noop':
-            cpu.noop()
-        elif args[0] == "addx":
-            v = int(args[1])
-            cpu.add_x(v)
-        else:
-            raise ValueError
+    cpu.run(file_path="data/day10.txt")
     return cpu.signal_sum
 
 class CRT:
@@ -109,32 +92,13 @@ class CRT:
 
 
 def task_2_example():
-    path = "data/day10_test.txt"
     cpu = CPU(signal_strength=20, crt=CRT())
-    for line in open(path):
-        args = line.split()
-        if args[0] == 'noop':
-            cpu.noop()
-        elif args[0] == "addx":
-            v = int(args[1])
-            cpu.add_x(v)
-        else:
-            raise ValueError
+    cpu.run(file_path="data/day10_test.txt")
     cpu.crt.draw_screen()
 
 def task_2():
-    path = "data/day10.txt"
     cpu = CPU(signal_strength=20, crt=CRT())
-    for line in open(path):
-        args = line.split()
-        if args[0] == 'noop':
-            cpu.noop()
-        elif args[0] == "addx":
-            v = int(args[1])
-            cpu.add_x(v)
-        else:
-            raise ValueError
-
+    cpu.run(file_path="data/day10.txt")
     cpu.crt.draw_screen()
 
 
@@ -150,9 +114,8 @@ if __name__ == '__main__':
     #####.....#####.....#####.....#####.....
     ######......######......######......####
     #######.......#######.......#######.....
-    """
+
     task_2()
-    """
     ###..#....####.####.#..#.#....###..###..
     #..#.#....#....#....#..#.#....#..#.#..#.
     #..#.#....###..###..#..#.#....#..#.###..
@@ -160,4 +123,5 @@ if __name__ == '__main__':
     #....#....#....#....#..#.#....#....#..#.
     #....####.####.#.....##..####.#....###..
     """
+    print(16480)
     print("PLEFULPB")
