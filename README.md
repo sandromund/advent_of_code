@@ -5,34 +5,9 @@ The programming puzzles cover a variety of skill sets and skill levels and can b
 Participants also compete based on speed on both global and private leaderboards.
 See https://adventofcode.com/.
 
-## 🌟 Completion Status 🌟
+## 🌟 Highlights🌟
 
-### [2022](./2022/)
-
-| -------- | Part 1 | Part 2 |
-|----------|--------|--------|
-| 1st      | ⭐      | ⭐      |
-| 2nd      | ⭐      | ⭐      |
-| 3rd      | ⭐      | ⭐      |
-| 4th      | ⭐      | ⭐      |
-| 5th      | ⭐      | ⭐      |
-| 6th      | ⭐      | ⭐      |
-| 7th      | ⭐      | ⭐      |
-| 8th      |        |        |
-| 9th      | ⭐      | ⭐      |
-| 10th     | ⭐      | ⭐      |
-| 11th     | ⭐      | ⭐      |
-| 12th     |        |        |
-| 13th     |        |        |
-| 14th     |        |        |
-| 15th     | ⭐      |        |
-| 16th     |        |        |
-| 17th     |        |        |
-| 18th     |        |        |
-| 19th     |        |        |
-| 20th     |        |        |
-| 21st     |        |        |
-| 22nd     |        |        |
-| 23rd     |        |        |
-| 24th     |        |        |
-| 25th     |        |        |
+### 2022 - Day 12 - Hill Climbing Algorithm -Visualization
+<p align="center">
+<img src="doc/day_12_plot.PNG"  width="60%" height="30%">
+</p>
