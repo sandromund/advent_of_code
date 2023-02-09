@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 class Monkey:
 
     def __init__(self):
@@ -52,7 +54,7 @@ def read_data(path):
         m.if_true_throw_to = monkeys[m.if_true_throw_to]
     return monkeys
 
-def turn(monkey_list, debug_print=False):
+def turn(monkey_list, debug_print=False, tasks_1=True):
     for m in monkey_list:
         if debug_print:
             print(f"Monkey: {m.id}")
@@ -64,9 +66,12 @@ def turn(monkey_list, debug_print=False):
             new_x = m.operation_function(x)
             if debug_print:
                 print("        Worry level is x="+str(x)+ " -> " + m.function_str + " = " + str(new_x))
-            new_x = new_x // 3
-            if debug_print:
-                print(f"        Monkey gets bored with item. Worry level is divided by 3 to {new_x}.")
+            if tasks_1:
+                new_x = new_x // 3
+                if debug_print:
+                    print(f"        Monkey gets bored with item. Worry level is divided by 3 to {new_x}.")
+            else:
+                new_x = new_x % 9699690
             if new_x % m.divisible_by != 0:
                 if debug_print:
                     print(f"        Current worry level is NOT divisible by {m.divisible_by }.")
@@ -79,9 +84,9 @@ def turn(monkey_list, debug_print=False):
                 m.if_true_throw_to.starting_items.append(new_x)
             m.starting_items = m.starting_items[1:]
 
-def rounds(n, monkey_list, debug_print=False):
+def rounds(n, monkey_list, debug_print=False, tasks_1=True):
     for i in range(1, n+1):
-        turn(monkey_list, debug_print=debug_print)
+        turn(monkey_list, debug_print=debug_print, tasks_1=tasks_1)
     if debug_print:
         print(f"\nAfter round {i}, the monkeys are holding items with these worry levels:")
         for m in monkey_list:
@@ -118,7 +123,29 @@ def day_11_task_1(debug_print=False):
         print(f"\nMonkey business level: {monkey_business_level}")
     return monkey_business_level
 
+def day_11_task_2(debug_print=False):
+    monkeys = read_data(path="data/day11.txt")
+
+    """
+    k = 1
+    for m in monkeys:
+        k *= m.divisible_by
+    print(k)
+    """
+
+    rounds(10000, monkeys, tasks_1=False)
+    monkey_business = []
+    for m in monkeys:
+        monkey_business.append(m.inspected_items)
+        if debug_print:
+            print(f"Monkey {m.id} inspected items {m.inspected_items} times.")
+    monkey_business = sorted(monkey_business, reverse=True)[:2]
+    monkey_business_level = monkey_business[0] * monkey_business[1]
+    if debug_print:
+        print(f"\nMonkey business level: {monkey_business_level}")
+    return monkey_business_level
 
 if __name__ == '__main__':
     assert day_11_example() == 10605
-    assert  day_11_task_1() == 56120
+    assert day_11_task_1() == 56120
+    print(day_11_task_2())
