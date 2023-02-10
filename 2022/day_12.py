@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.pyplot as mpl
 import networkx as nx
 from networkx import NetworkXNoPath
 
@@ -59,8 +58,8 @@ def plot_3d(array):
 
 
 def plot_2d(array):
-    mpl.imshow(array)
-    mpl.show()
+    plt.imshow(array)
+    plt.show()
 
 
 def plot_graph(nx_graph, array):
