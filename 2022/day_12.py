@@ -2,9 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.pyplot as mpl
 import networkx as nx
-# from mpl_toolkits.mplot3d import Axes3D
-# from matplotlib import cm
-import scipy as sp
+from networkx import NetworkXNoPath
 
 
 def read_data(path):
@@ -96,6 +94,25 @@ def get_goal_pos(data):
     return x, y
 
 
+def day_12_task_2():
+    min_dist = None
+    data = read_data("data/day12.txt")
+    starting_points = np.where(data < 1)
+    g = create_graph(data)
+    for x, y in zip(starting_points[0], starting_points[1]):
+        try:
+            d = nx.shortest_path_length(g, source=(x, y), target=(20, 40))
+        except NetworkXNoPath:
+            d = None
+        if d is not None and (min_dist is None or d < min_dist):
+            min_dist = d
+    return min_dist
+
+
 if __name__ == '__main__':
+    # We are using the dijkstra algo. here
     assert day_12_example() == 31
     assert day_12_task_1() == 370
+    assert day_12_task_2() == 363
+    print("day_12_task_1() == 370")
+    print("day_12_task_2() == 363")
