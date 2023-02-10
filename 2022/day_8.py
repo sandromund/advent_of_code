@@ -1,105 +1,78 @@
-data = []
-for line in open("data/day8_test.txt"):
-    data.append(list(line[:-1]))
-
-n_cols = len(data)
-n_rows = len(data[0])
-
-# add borders with zeros
-for i in range(len(data)):
-    data[i] = [-1] + list(map(int, data[i])) + [-1]
-data.insert(0, [-1] * (n_cols + 2))
-data.append([-1] * (n_cols + 2))
-
-index_left, index_right = 1, n_rows
-
-index_top_border = 1
-index_left_border = 1
-index_right_border = n_rows
-index_bottom_border = n_cols
+import numpy as np
+import matplotlib.pyplot as plt
 
 
-
-visible = 0
-stop = False
-
-while not stop:
-
-
-    visible_top = 0
-    visible_bot = 0
-    visible_left = 0
-    visible_right = 0
-    # check top border
-    for i in range(index_left, index_right + 1):
-        if int(data[index_top_border][i]) > int(data[index_top_border - 1][i]):
-            visible_top += 1
-        data[index_top_border][i] = max(data[index_top_border][i], data[index_top_border - 1][i])
+def read_data(path):
+    d = []
+    for line in open(path):
+        d.append(list(map(int, list(line[:-1]))))
+    return np.array(d)
 
 
-        # check bottom border
-        if int(data[index_bottom_border][i]) > int(data[index_bottom_border + 1][i]):
-            visible_bot += 1
-        data[index_bottom_border][i] = max(data[index_bottom_border][i], data[index_bottom_border + 1][i])
-
-    # check left side
-    for i in range(index_top_border, index_bottom_border + 1):
-        if data[i][index_left_border] > data[i][index_left_border - 1]:
-            visible_left += 1
-        data[i][index_left_border] = max(data[i][index_left_border], data[i][index_left_border - 1])
-
-        # check right side
-        if data[i][index_right_border] > data[i][index_right_border + 1]:
-            visible_right += 1
-        data[i][index_right_border] = max(data[i][index_right_border], data[i][index_right_border + 1])
-
-        # check edges
-    # left top
-    if data[index_top_border][index_left_border] > data[index_top_border - 1][index_left_border] or \
-            data[index_top_border][index_left_border - 1]:
-        visible += 1
-
-    # right top
-    if data[index_top_border][index_right_border] > data[index_top_border - 1][index_right_border] or \
-            data[index_top_border][index_right_border - 1]:
-        visible += 1
-
-    # left bot
-    if data[index_bottom_border][index_left_border] > data[index_bottom_border - 1][index_left_border] or \
-            data[index_bottom_border][index_left_border - 1]:
-        visible += 1
-
-    # right bot
-    if data[index_bottom_border][index_right_border] > data[index_bottom_border - 1][index_right_border] or \
-            data[index_bottom_border][index_right_border - 1]:
-        visible += 1
-
-    for l in data:
-        print(l)
-
-    print("visible_top", visible_top)
-    print("visible_bot", visible_bot)
-    print("visible_right", visible_right)
-    print("visible_left", visible_left)
-
-    print("!", index_right_border +1 - index_left_border )
-
-    index_right_border -= 1
-    index_left_border += 1
-    index_top_border += 1
-    index_bottom_border -= 1
-    index_left += 1
-    index_right -= 1
-
-    if index_top_border == index_bottom_border -1:
-        stop = True
+def plot_2d(array):
+    plt.imshow(array)
+    plt.show()
 
 
+def plot_3d(array):
+    n, m = array.shape
+    x = np.array([[i for i in range(m)] for _ in range(n)]).flatten()
+    y = np.array([[i] * m for i in range(n)]).flatten()
+    z = array.flatten()
+    ax = plt.figure().add_subplot(projection='3d')
+    ax.plot_trisurf(x, y, z, cmap=plt.cm.jet)
+    plt.show()
 
 
+def is_visible(x, y, array):
+    n, m = array.shape
+    v = array[x][y]
 
-    visible += visible_top +visible_bot + visible_right + visible_left
+    is_visible_top = True
+    for i in range(x - 1, -1, -1):
+        w = array[i][y]
+        if w >= v:
+            is_visible_top = False
+            break
+    if is_visible_top:
+        return True
+    is_visible_down = True
+    for i in range(x + 1, n):
+        w = array[i][y]
+        if w >= v:
+            is_visible_down = False
+            break
+    if is_visible_down:
+        return True
+    is_visible_left = True
+    for j in range(y - 1, -1, -1):
+        w = array[x][j]
+        if w >= v:
+            is_visible_left = False
+            break
+    if is_visible_left:
+        return True
+    is_visible_right = True
+    for j in range(y + 1, m):
+        w = array[x][j]
+        if w >= v:
+            is_visible_right = False
+            break
+    if is_visible_right:
+        return True
+    return False
 
-    print()
 
-print(visible -4)
+def day_8_task_1(array):
+    n_visible = 0
+    n, m = array.shape
+    for x in range(n):
+        for y in range(m):
+            if is_visible(x, y, array):
+                n_visible += 1
+    return n_visible
+
+
+if __name__ == '__main__':
+    assert day_8_task_1(read_data(path="data/day8_test.txt")) == 21
+    assert day_8_task_1(read_data(path="data/day8.txt")) == 1827
