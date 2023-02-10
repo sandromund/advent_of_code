@@ -25,10 +25,27 @@ def map_chars_to_int(x):
     return "abcdefghijklmnopqrstuvwxyz".index(x)
 
 
-def create_graph(data):
-    for y, row in enumerate(data):
+def create_graph(array):
+    # directed graph
+    g = nx.DiGraph()
+
+    # first we create all nodes
+    for y, row in enumerate(array):
         for x, col in enumerate(row):
-            print(data[y][x])
+            g.add_node((x, y))
+
+    # then we add edges the help us to get to the top
+    nx.set_node_attributes(g, array.flatten(), "height")
+    for x, row in enumerate(array):
+        for y, col in enumerate(row):
+            for neighbor_x, neighbor_y in [(x + 1, y), (x - 1, y), (x, y - 1), (x, y + 1)]:
+                if 0 <= neighbor_x < len(array) and 0 <= neighbor_y < len(row):
+                    current_height = array[x][y]
+                    neighbor_height = array[neighbor_x][neighbor_y]
+                    if current_height == neighbor_height or current_height == neighbor_height - 1:
+                        g.add_edge((x, y), (neighbor_x, neighbor_y))
+    g.remove_nodes_from(list(nx.isolates(g)))
+    return g
 
 
 def plot_3d(array):
@@ -47,12 +64,16 @@ def plot_2d(array):
     mpl.imshow(array)
     mpl.show()
 
+
+def plot_graph(nx_graph):
+    nx.draw(nx_graph, with_labels=True)
+    plt.show()
+
+
 if __name__ == '__main__':
-    data = read_data("data/day12.txt")
+    data = read_data("data/day12_example.txt")
+    # plot_3d(data)
+    # plot_2d(data)
 
-    # create_graph(data)
-
-    # G = nx.complete_graph(5)
-    # nx.draw(G)
-    # plt.show()
-    plot_2d(data)
+    g = create_graph(data)
+    plot_graph(g)
