@@ -100,8 +100,54 @@ def day_13_task_1():
     return sum_indices
 
 
+def read_data_tasks_2(path):
+    signal_list = []
+    for line in open(path):
+        if "\n" in line:
+            line = line.replace("\n", "")
+        if len(line) < 1:
+            continue
+        exec("signal_list.append(" + str(line) + ")")
+    return signal_list
+
+
+def sort_signals(signals):
+    signals_sorted = [signals[0]]
+
+    # insertion sort
+    for i in range(len(signals)):
+        inserted = False
+        for j in range(len(signals_sorted)):
+            p = Packet()
+            p.compare(left=signals[i], right=signals_sorted[j])
+            if p.in_the_right_order:
+                signals_sorted = signals_sorted[:j] + [signals[i]] + signals_sorted[j:]
+                inserted = True
+                break
+        if not inserted:
+            signals_sorted += [signals[i]]
+    return signals_sorted
+
+
+def day_13_task_2_example():
+    signals = read_data_tasks_2("data/day_13_example.txt")
+    signals.append([[2]])
+    signals.append([[6]])
+    signals_sorted = sort_signals(signals)
+    return signals_sorted.index([[6]]) * signals_sorted.index([[2]])
+
+
+def day_13_task_2():
+    signals = read_data_tasks_2("data/day_13.txt")
+    signals.append([[2]])
+    signals.append([[6]])
+    signals_sorted = sort_signals(signals)
+    return signals_sorted.index([[6]]) * signals_sorted.index([[2]])
+
+
 if __name__ == '__main__':
     logging.basicConfig(filename='logs/day_15.log', encoding='utf-8', level=logging.DEBUG, filemode='w')
     assert day_13_example() == 13
     assert day_13_task_1() == 6235
-    print(day_13_task_1())
+    assert day_13_task_2_example() == 140
+    assert day_13_task_2() == 22866
