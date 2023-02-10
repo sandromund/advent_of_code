@@ -2,8 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.pyplot as mpl
 import networkx as nx
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
+# from mpl_toolkits.mplot3d import Axes3D
+# from matplotlib import cm
+import scipy as sp
 
 
 def read_data(path):
@@ -30,19 +31,20 @@ def create_graph(array):
     g = nx.DiGraph()
 
     # first we create all nodes
-    for y, row in enumerate(array):
-        for x, col in enumerate(row):
-            g.add_node((x, y))
+    for x, row in enumerate(array):
+        for y, col in enumerate(row):
+            g.add_node((x, y), size=array[x][y])
 
     # then we add edges the help us to get to the top
-    nx.set_node_attributes(g, array.flatten(), "height")
+    # nx.set_node_attributes(g, array.flatten(), "height")
     for x, row in enumerate(array):
         for y, col in enumerate(row):
             for neighbor_x, neighbor_y in [(x + 1, y), (x - 1, y), (x, y - 1), (x, y + 1)]:
                 if 0 <= neighbor_x < len(array) and 0 <= neighbor_y < len(row):
                     current_height = array[x][y]
                     neighbor_height = array[neighbor_x][neighbor_y]
-                    if current_height == neighbor_height or current_height == neighbor_height - 1:
+                    if current_height == neighbor_height or current_height == neighbor_height - 1 \
+                            or current_height > neighbor_height:
                         g.add_edge((x, y), (neighbor_x, neighbor_y))
     g.remove_nodes_from(list(nx.isolates(g)))
     return g
@@ -53,8 +55,6 @@ def plot_3d(array):
     x = np.array([[i for i in range(m)] for _ in range(n)]).flatten()
     y = np.array([[i] * m for i in range(n)]).flatten()
     z = array.flatten()
-
-    print(x, y, z, sep="\n")
     ax = plt.figure().add_subplot(projection='3d')
     ax.plot_trisurf(x, y, z, cmap=plt.cm.jet)
     plt.show()
@@ -65,15 +65,37 @@ def plot_2d(array):
     mpl.show()
 
 
-def plot_graph(nx_graph):
-    nx.draw(nx_graph, with_labels=True)
+def plot_graph(nx_graph, array):
+    color_map = [array[x][y] for x, y in nx_graph]
+    nx.draw(nx_graph, with_labels=True, node_color=color_map, cmap=plt.cm.Greens)
     plt.show()
 
 
-if __name__ == '__main__':
+def day_12_example(plots=False):
     data = read_data("data/day12_example.txt")
-    # plot_3d(data)
-    # plot_2d(data)
-
     g = create_graph(data)
-    plot_graph(g)
+    if plots:
+        plot_3d(data)
+        plot_2d(data)
+        plot_graph(g, data)
+    return nx.shortest_path_length(g, source=(0, 0), target=(2, 5))
+
+
+def day_12_task_1(plots=False):
+    data = read_data("data/day12.txt")
+    if plots:
+        plot_3d(data)
+        plot_2d(data)
+    g = create_graph(data)
+    return nx.shortest_path_length(g, source=(20, 0), target=(20, 40))
+
+
+def get_goal_pos(data):
+    x, y = np.where(data == data.max())
+    x, y = x[0], y[0]
+    return x, y
+
+
+if __name__ == '__main__':
+    assert day_12_example() == 31
+    assert day_12_task_1() == 370
