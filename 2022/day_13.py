@@ -1,3 +1,6 @@
+import logging
+
+
 class Packet:
 
     def __init__(self):
@@ -10,14 +13,14 @@ class Packet:
         """
         if self.in_the_right_order is not None:
             return
-        print(depth * "   " + f"- Compare {left} vs {right}")
+        logging.debug(depth * "   " + f"- Compare {left} vs {right}")
 
         if type(left) == int == type(right):
             if left < right:
-                print((1 + depth) * "   " + "- Left side is smaller, so inputs are in the right order")
+                logging.debug((1 + depth) * "   " + "- Left side is smaller, so inputs are in the right order")
                 self.in_the_right_order = True
             if left > right:
-                print((1 + depth) * "   " + "- Right side is smaller, so inputs are not in the right order")
+                logging.debug((1 + depth) * "   " + "- Right side is smaller, so inputs are not in the right order")
                 self.in_the_right_order = False
 
         elif type(left) == list == type(right):
@@ -30,16 +33,17 @@ class Packet:
                     self.compare(left[i], right[i], depth=depth + 1)
                 if self.in_the_right_order is None:
                     if len(left) > len(right):
-                        print(depth * "   " + f"Right side ran out of items, so inputs are in the right order")
+                        logging.debug(
+                            depth * "   " + f"- Right side ran out of items, so inputs are in the right order")
                         self.in_the_right_order = False
                     else:
-                        print(depth * "   " + f"Left side ran out of items, so inputs are in the right order")
+                        logging.debug(depth * "   " + f"- Left side ran out of items, so inputs are in the right order")
                         self.in_the_right_order = True
         elif type(left) == list and type(right) == int:
-            print(depth * "   " + f"- Mixed types; convert right to [{right}] and retry comparison")
+            logging.debug(depth * "   " + f"- Mixed types; convert right to [{right}] and retry comparison")
             self.compare(left, [right], depth=depth + 1)
         elif type(left) == int and type(right) == list:
-            print(depth * "   " + f"- Mixed types; convert left to [{left}] and retry comparison")
+            logging.debug(depth * "   " + f"- Mixed types; convert left to [{left}] and retry comparison")
             self.compare([left], right, depth=depth + 1)
         else:
             raise TypeError
@@ -97,6 +101,7 @@ def day_13_task_1():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(filename='logs/day_15.log', encoding='utf-8', level=logging.DEBUG, filemode='w')
     assert day_13_example() == 13
     assert day_13_task_1() == 6235
     print(day_13_task_1())
