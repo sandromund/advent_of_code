@@ -73,6 +73,54 @@ def day_8_task_1(array):
     return n_visible
 
 
+def scenic_score(x, y, array):
+    n, m = array.shape
+    v = array[x][y]
+
+    n_visible_top = 0
+    for i in range(x - 1, -1, -1):
+        w = array[i][y]
+        n_visible_top += 1
+        if w >= v:
+            break
+
+    n_visible_down = 0
+    for i in range(x + 1, n):
+        n_visible_down += 1
+        w = array[i][y]
+        if w >= v:
+            break
+
+    n_visible_left = 0
+    for j in range(y - 1, -1, -1):
+        n_visible_left += 1
+        w = array[x][j]
+        if w >= v:
+            break
+
+    n_visible_right = 0
+    for j in range(y + 1, m):
+        n_visible_right += 1
+        w = array[x][j]
+        if w >= v:
+            break
+
+    return n_visible_top * n_visible_down * n_visible_left * n_visible_right
+
+
+def day_8_task_2(array):
+    max_scenic_score = None
+    n, m = array.shape
+    for x in range(n):
+        for y in range(m):
+            s = scenic_score(x, y, array)
+            if max_scenic_score is None or s > max_scenic_score:
+                max_scenic_score = s
+    return max_scenic_score
+
+
 if __name__ == '__main__':
     assert day_8_task_1(read_data(path="data/day8_test.txt")) == 21
     assert day_8_task_1(read_data(path="data/day8.txt")) == 1827
+    assert day_8_task_2(read_data(path="data/day8_test.txt")) == 8
+    assert day_8_task_2(read_data(path="data/day8.txt")) == 335580
