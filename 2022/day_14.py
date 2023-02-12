@@ -59,7 +59,7 @@ class Cave:
 
         """
         m, n = self.cave.shape
-        n_sand = 0
+        n_sand = -1
         while True:
             n_sand += 1
             x, y = self.spawn
@@ -80,13 +80,9 @@ class Cave:
 
 
 def day_14_example():
-    return Cave(path="data/day_14_example.txt").sand_fall_down()
+    return
 
 
 if __name__ == '__main__':
-    assert day_14_example() == 25
-
-    cave = Cave(path="data/day_14.txt")
-    # cave = Cave(path="data/day_14.txt")
-    print(cave.sand_fall_down())
-    cave.plot()
+    assert Cave(path="data/day_14_example.txt").sand_fall_down() == 24
+    assert Cave(path="data/day_14.txt").sand_fall_down() == 817
