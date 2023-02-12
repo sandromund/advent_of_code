@@ -36,30 +36,30 @@ def read_data(path):
     return pipes
 
 
-pipes = read_data(path="data/day_16_example.txt")
+pipes = read_data(path="data/day_16.txt")
 
 
 @cache
-def depth_search(current: str, minutes_left: int, pressure_sum: int, open_pipes: str):
-    pressure_sum += sum([p.flow_rate for p in pipes.values() if p.name in open_pipes])
-
-    if minutes_left < 2:
-        return pressure_sum
+def depth_search(current: str, minutes_left: int, open_pipes):
+    if minutes_left == 0:
+        return 0
 
     paths = []
     for neighbor in pipes.get(current).lead_to:
         paths.append(
-            depth_search(current=neighbor.name, minutes_left=minutes_left - 1, pressure_sum=pressure_sum,
+            depth_search(current=neighbor.name, minutes_left=minutes_left - 1,
                          open_pipes=open_pipes))
     if current not in open_pipes and pipes.get(current).flow_rate > 0:
-        paths.append(
-            depth_search(current=current, minutes_left=minutes_left - 1, pressure_sum=pressure_sum,
-                         open_pipes=open_pipes + " " + str(current)))
+        new_open_pipes = set(open_pipes)
+        new_open_pipes.add(current)
+        new_open_pipes = frozenset(new_open_pipes)
+        paths.append((pipes[current].flow_rate * (minutes_left - 1)) +
+                     depth_search(current=current, minutes_left=minutes_left - 1,
+                                  open_pipes=new_open_pipes))
 
-    return pressure_sum + max(paths)
+    return max(paths)
 
 
 if __name__ == '__main__':
-    print(depth_search(current="AA", minutes_left=29, pressure_sum=6, open_pipes=""))
-
-    # 19375 to high
+    # assert depth_search(current="AA", minutes_left=30, open_pipes=frozenset()) == 1651
+    print(depth_search(current="AA", minutes_left=30, open_pipes=frozenset()))  # --> 2359
