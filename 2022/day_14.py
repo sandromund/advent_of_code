@@ -45,7 +45,7 @@ class Cave:
         plt.imshow(self.cave)
         plt.show()
 
-    def sand_fall_down(self):
+    def sand_fall_down(self) -> int:
         """
         Sand is produced one unit at a time, and the next unit of sand is not produced until the previous
         unit of sand comes to rest. A unit of sand is large enough to fill one tile of air in your scan.
@@ -64,7 +64,7 @@ class Cave:
             n_sand += 1
             x, y = self.spawn
             while True:
-                if x == n or y == m:
+                if not (0 <= x < m - 1 and 0 <= y < n - 1):
                     return n_sand
 
                 if self.cave[y + 1][x] == 0:  # try fall down
@@ -79,8 +79,14 @@ class Cave:
             self.cave[y][x] = self.sand_encoding
 
 
+def day_14_example():
+    return Cave(path="data/day_14_example.txt").sand_fall_down()
+
+
 if __name__ == '__main__':
-    cave = Cave(path="data/day_14_example.txt")
+    assert day_14_example() == 25
+
+    cave = Cave(path="data/day_14.txt")
     # cave = Cave(path="data/day_14.txt")
     print(cave.sand_fall_down())
     cave.plot()
