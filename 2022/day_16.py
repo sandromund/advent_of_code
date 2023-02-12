@@ -1,3 +1,6 @@
+from functools import cache
+
+
 class Pipe:
 
     def __init__(self, name, flow_rate, lead_to):
@@ -11,8 +14,7 @@ class Pipe:
         return f"Valve {self.name} has flow rate={self.flow_rate}; tunnels lead to valves {connections}"
 
 
-def read_data(path) -> dict[Pipe]:
-
+def read_data(path):
     pipes = {}
 
     for line in open(path):
@@ -34,8 +36,30 @@ def read_data(path) -> dict[Pipe]:
     return pipes
 
 
-if __name__ == '__main__':
-    data = read_data(path="data/day_16_example.txt")
+pipes = read_data(path="data/day_16_example.txt")
 
-    for pipe in data.values():
-        print(pipe)
+
+@cache
+def depth_search(current: str, minutes_left: int, pressure_sum: int, open_pipes: str):
+    pressure_sum += sum([p.flow_rate for p in pipes.values() if p.name in open_pipes])
+
+    if minutes_left < 2:
+        return pressure_sum
+
+    paths = []
+    for neighbor in pipes.get(current).lead_to:
+        paths.append(
+            depth_search(current=neighbor.name, minutes_left=minutes_left - 1, pressure_sum=pressure_sum,
+                         open_pipes=open_pipes))
+    if current not in open_pipes and pipes.get(current).flow_rate > 0:
+        paths.append(
+            depth_search(current=current, minutes_left=minutes_left - 1, pressure_sum=pressure_sum,
+                         open_pipes=open_pipes + " " + str(current)))
+
+    return pressure_sum + max(paths)
+
+
+if __name__ == '__main__':
+    print(depth_search(current="AA", minutes_left=29, pressure_sum=6, open_pipes=""))
+
+    # 19375 to high
