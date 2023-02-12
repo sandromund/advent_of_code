@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 class Cave:
 
     def __init__(self, path):
-        self.cave = np.zeros(shape=(600, 600), dtype=int)
+        self.cave = np.zeros(shape=(1000, 1000), dtype=int)
         self.max_y = None
         self.spawn = 500, 0  # The sand is pouring into the cave from point
         self.stone_encoding = 10
@@ -88,9 +88,9 @@ class Cave:
                 if self.cave[y + 1][x] == 0:  # try fall down
                     y = y + 1
                 else:
-                    if x - 1 >= 0 and self.cave[y + 1][x - 1] == 0:  # try fall to the left
+                    if x - 1 >= 0 and self.cave[y +1 ][x - 1] == 0:  # try fall to the left
                         x, y = x - 1, y + 1
-                    elif x + 1 < n and self.cave[y + 1][x + 1] == 0:  # try fall to the right
+                    elif x + 1 < n and self.cave[y+1][x + 1] == 0:  # try fall to the right
                         x, y = x + 1, y + 1
                     else:
                         break
@@ -100,12 +100,8 @@ class Cave:
 
 
 if __name__ == '__main__':
-    # assert Cave(path="data/day_14_example.txt").sand_fall_down() == 24
-    # assert Cave(path="data/day_14.txt").sand_fall_down() == 817
-    # assert Cave(path="data/day_14_example.txt").max_y == 9
-    print(Cave(path="data/day_14_example.txt").task_2())
+    assert Cave(path="data/day_14_example.txt").sand_fall_down() == 24
+    assert Cave(path="data/day_14.txt").sand_fall_down() == 817
+    assert Cave(path="data/day_14_example.txt").max_y == 9
     assert Cave(path="data/day_14_example.txt").task_2() == 93
-
-    cave = Cave(path="data/day_14.txt")
-    print(cave.task_2())
-    cave.plot()
+    assert Cave(path="data/day_14.txt").task_2() == 23416

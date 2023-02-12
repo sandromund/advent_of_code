@@ -7,7 +7,13 @@ See https://adventofcode.com/.
 
 ## 🌟 Highlights🌟
 
-### 2022 - Day 12 - Hill Climbing Algorithm -Visualization
+### 2022 - Day 12 - Hill Climbing Algorithm - Visualization
 <p align="center">
 <img src="doc/day_12_plot.PNG"  width="60%" height="30%">
+</p>
+
+
+### 2022 - Day 14 - Sand Waterfall - Visualization
+<p align="center">
+<img src="doc/day_14_plot.PNG"  width="60%" height="30%">
 </p>
