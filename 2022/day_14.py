@@ -25,21 +25,22 @@ class Cave:
     def __load_data(self, path):
         for line in open(path):
             points = self.__read_line(line)
+            print(points)
             for i in range(len(points) - 1):
-                start_point_y, start_point_x = points[i]
-                end_point_y, end_point_x = points[i + 1]
+                start_point_x, start_point_y = points[i]
+                end_point_x, end_point_y = points[i + 1]
                 if start_point_x <= end_point_x:
                     for x in range(start_point_x, end_point_x + 1):
-                        self.cave[x][start_point_y] = self.stone_encoding
+                        self.cave[start_point_y][x] = self.stone_encoding
                 else:
-                    for x in range(end_point_x, start_point_x - 1, -1):
-                        self.cave[x][start_point_y] = self.stone_encoding
+                    for x in range(start_point_x, end_point_x-1, -1):
+                        self.cave[start_point_y][x] = self.stone_encoding
                 if start_point_y <= end_point_y:
-                    for y in range(start_point_y, start_point_y + 1):
-                        self.cave[start_point_x][y] = self.stone_encoding
+                    for y in range(start_point_y, end_point_y + 1):
+                        self.cave[y][start_point_x] = self.stone_encoding
                 else:
-                    for y in range(start_point_y, end_point_y - 1, -1):
-                        self.cave[start_point_x][y] = self.stone_encoding
+                    for y in range(start_point_y, end_point_y-1, -1):
+                        self.cave[y][start_point_x] = self.stone_encoding
 
     def plot(self):
         plt.imshow(self.cave)
@@ -61,16 +62,17 @@ class Cave:
         sand_comes_to_rest = False
         x, y = self.spawn
         while not sand_comes_to_rest:
+            print(x, y)
             new_x, ney_y = x, y
-            if self.cave[x][y - 1] == 0:  # try fall down
-                ney_y = y - 1
+            if self.cave[x][y + 1] == 0:  # try fall down
+                ney_y = y + 1
             else:
-                if self.cave[x - 1][y - 1] == self.sand_encoding:  # try fall to the left
-                    x, y = x - 1, y - 1
-                    new_x, ney_y = x - 1, y - 1
-                elif self.cave[x - 1][y + 1] == self.sand_encoding:  # try fall to the right
+                if self.cave[x - 1][y + 1] == self.sand_encoding:  # try fall to the left
                     x, y = x - 1, y + 1
                     new_x, ney_y = x - 1, y + 1
+                elif self.cave[x + 1][y + 1] == self.sand_encoding:  # try fall to the right
+                    x, y = x - 1, y + 1
+                    new_x, ney_y = x + 1, y + 1
             if x == new_x and y == ney_y:
                 self.cave[x][y] = self.sand_encoding
                 sand_comes_to_rest = True
@@ -84,6 +86,7 @@ class Cave:
 
 if __name__ == '__main__':
     cave = Cave(path="data/day_14_example.txt")
-    #cave = Cave(path="data/day_14.txt")
-    #cave.spawn_sand(1)
+    # cave = Cave(path="data/day_14.txt")
     cave.plot()
+    cave.spawn_sand(1)
+    #
