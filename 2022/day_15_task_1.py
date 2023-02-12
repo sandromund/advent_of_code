@@ -12,10 +12,10 @@ TEST = False
 
 if TEST:
     y = 11
-    file_path = "data/day15_test.txt"
+    file_path = "data/day_15_test.txt"
 else:
     y = 2000000
-    file_path = "data/day15.txt"
+    file_path = "data/day_15.txt"
 
 input_list = []
 distance_list = []
