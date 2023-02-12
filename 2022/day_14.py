@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 class Cave:
 
     def __init__(self, path):
-        self.cave = np.zeros(shape=(600, 600))
+        self.cave = np.zeros(shape=(600, 600), dtype=int)
         self.spawn = 500, 0  # The sand is pouring into the cave from point
         self.stone_encoding = 10
         self.sand_encoding = 5
@@ -25,7 +25,6 @@ class Cave:
     def __load_data(self, path):
         for line in open(path):
             points = self.__read_line(line)
-            print(points)
             for i in range(len(points) - 1):
                 start_point_x, start_point_y = points[i]
                 end_point_x, end_point_y = points[i + 1]
@@ -33,20 +32,20 @@ class Cave:
                     for x in range(start_point_x, end_point_x + 1):
                         self.cave[start_point_y][x] = self.stone_encoding
                 else:
-                    for x in range(start_point_x, end_point_x-1, -1):
+                    for x in range(start_point_x, end_point_x - 1, -1):
                         self.cave[start_point_y][x] = self.stone_encoding
                 if start_point_y <= end_point_y:
                     for y in range(start_point_y, end_point_y + 1):
                         self.cave[y][start_point_x] = self.stone_encoding
                 else:
-                    for y in range(start_point_y, end_point_y-1, -1):
+                    for y in range(start_point_y, end_point_y - 1, -1):
                         self.cave[y][start_point_x] = self.stone_encoding
 
     def plot(self):
         plt.imshow(self.cave)
         plt.show()
 
-    def __sand_fall_down(self):
+    def sand_fall_down(self):
         """
         Sand is produced one unit at a time, and the next unit of sand is not produced until the previous
         unit of sand comes to rest. A unit of sand is large enough to fill one tile of air in your scan.
@@ -59,34 +58,29 @@ class Cave:
         no longer moves, at which point the next unit of sand is created back at the source.
 
         """
-        sand_comes_to_rest = False
-        x, y = self.spawn
-        while not sand_comes_to_rest:
-            print(x, y)
-            new_x, ney_y = x, y
-            if self.cave[x][y + 1] == 0:  # try fall down
-                ney_y = y + 1
-            else:
-                if self.cave[x - 1][y + 1] == self.sand_encoding:  # try fall to the left
-                    x, y = x - 1, y + 1
-                    new_x, ney_y = x - 1, y + 1
-                elif self.cave[x + 1][y + 1] == self.sand_encoding:  # try fall to the right
-                    x, y = x - 1, y + 1
-                    new_x, ney_y = x + 1, y + 1
-            if x == new_x and y == ney_y:
-                self.cave[x][y] = self.sand_encoding
-                sand_comes_to_rest = True
-            else:
-                x, y = new_x, ney_y
+        m, n = self.cave.shape
+        n_sand = 0
+        while True:
+            n_sand += 1
+            x, y = self.spawn
+            while True:
+                if x == n or y == m:
+                    return n_sand
 
-    def spawn_sand(self, n):
-        for _ in range(n):
-            self.__sand_fall_down()
+                if self.cave[y + 1][x] == 0:  # try fall down
+                    y = y + 1
+                else:
+                    if self.cave[y + 1][x - 1] == 0:  # try fall to the left
+                        x, y = x - 1, y + 1
+                    elif self.cave[y + 1][x + 1] == 0:  # try fall to the right
+                        x, y = x + 1, y + 1
+                    else:
+                        break
+            self.cave[y][x] = self.sand_encoding
 
 
 if __name__ == '__main__':
     cave = Cave(path="data/day_14_example.txt")
     # cave = Cave(path="data/day_14.txt")
+    print(cave.sand_fall_down())
     cave.plot()
-    cave.spawn_sand(1)
-    #
