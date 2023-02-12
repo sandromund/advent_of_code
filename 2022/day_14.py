@@ -6,13 +6,13 @@ class Cave:
 
     def __init__(self, path):
         self.cave = np.zeros(shape=(600, 600), dtype=int)
+        self.max_y = None
         self.spawn = 500, 0  # The sand is pouring into the cave from point
         self.stone_encoding = 10
         self.sand_encoding = 5
         self.__load_data(path)
 
-    @staticmethod
-    def __read_line(line):
+    def __read_line(self, line):
         if "\n" in line:
             line = line.replace("\n", "")
         points = line.split(" -> ")
@@ -20,6 +20,8 @@ class Cave:
         for point in points:
             x, y = list(map(int, point.split(",")))
             line_points.append((x, y))
+            if self.max_y is None or y > self.max_y:
+                self.max_y = y
         return line_points
 
     def __load_data(self, path):
@@ -46,18 +48,6 @@ class Cave:
         plt.show()
 
     def sand_fall_down(self) -> int:
-        """
-        Sand is produced one unit at a time, and the next unit of sand is not produced until the previous
-        unit of sand comes to rest. A unit of sand is large enough to fill one tile of air in your scan.
-
-        A unit of sand always falls down one step if possible. If the tile immediately below is blocked
-        (by rock or sand), the unit of sand attempts to instead move diagonally one step down and to the left.
-        If that tile is blocked, the unit of sand attempts to instead move diagonally one step down and to the right.
-        Sand keeps moving as long as it is able to do so, at each step trying to move down, then down-left,
-        then down-right. If all three possible destinations are blocked, the unit of sand comes to rest and
-        no longer moves, at which point the next unit of sand is created back at the source.
-
-        """
         m, n = self.cave.shape
         n_sand = -1
         while True:
@@ -78,11 +68,44 @@ class Cave:
                         break
             self.cave[y][x] = self.sand_encoding
 
+    def add_floor(self):
+        _, n = self.cave.shape
+        y = self.max_y + 2
+        for x in range(n):
+            self.cave[y][x] = self.stone_encoding
 
-def day_14_example():
-    return
+    def task_2(self):
+        self.add_floor()
+        m, n = self.cave.shape
+        n_sand = -1
+        while True:
+            n_sand += 1
+            x, y = self.spawn
+            while True:
+
+                if y + 1 >= m or not (0 <= x < n and 0 <= y < m):
+                    break
+                if self.cave[y + 1][x] == 0:  # try fall down
+                    y = y + 1
+                else:
+                    if x - 1 >= 0 and self.cave[y + 1][x - 1] == 0:  # try fall to the left
+                        x, y = x - 1, y + 1
+                    elif x + 1 < n and self.cave[y + 1][x + 1] == 0:  # try fall to the right
+                        x, y = x + 1, y + 1
+                    else:
+                        break
+            self.cave[y][x] = self.sand_encoding
+            if (x, y) == self.spawn:
+                return np.count_nonzero(self.cave == self.sand_encoding)
 
 
 if __name__ == '__main__':
-    assert Cave(path="data/day_14_example.txt").sand_fall_down() == 24
-    assert Cave(path="data/day_14.txt").sand_fall_down() == 817
+    # assert Cave(path="data/day_14_example.txt").sand_fall_down() == 24
+    # assert Cave(path="data/day_14.txt").sand_fall_down() == 817
+    # assert Cave(path="data/day_14_example.txt").max_y == 9
+    print(Cave(path="data/day_14_example.txt").task_2())
+    assert Cave(path="data/day_14_example.txt").task_2() == 93
+
+    cave = Cave(path="data/day_14.txt")
+    print(cave.task_2())
+    cave.plot()
