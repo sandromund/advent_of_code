@@ -7,14 +7,8 @@ def read_data(path) -> np.array:
     single_line_str.replace(" ", "")
     array = []
     for symbol in list(single_line_str):
-        if symbol == ">":
-            array.append(1)
-        elif symbol == "<":
-            array.append(-1)
-        else:
-            print(symbol)
-            raise ValueError
-    return np.array(array)
+        array.append(symbol)
+    return array
 
 
 class Rock:
@@ -62,8 +56,6 @@ class Chamber:
         for i in range(len(self.data) - 1, -1, -1):
             line_str = ""
             for number in self.data[i]:
-                # if (number, i) in self.current_rock_points:
-                #    line_str += " @ "
                 if number > 0:
                     line_str += "#"
                 else:
@@ -163,7 +155,7 @@ class Chamber:
         gets_pushed = True
         while self.n_rested < 2022:
             if gets_pushed:
-                if self.jets_of_hot_gas[self.current_jet_index] > 0:
+                if self.jets_of_hot_gas[self.current_jet_index] == ">":
                     self.move_rock_right()
                 else:
                     self.move_rock_left()
@@ -201,9 +193,11 @@ def play():
 def day_17_task_1_example():
     chamber = Chamber(input_data_path="data/day_17_example.txt", vertical_chamber_wide=7)
     chamber.run()
-    chamber.print_chamber()
+    print("".join(chamber.jets_of_hot_gas))
+    #chamber.print_chamber()
     return len(chamber.data)
 
 
 if __name__ == '__main__':
     print(day_17_task_1_example())
+    #play()
