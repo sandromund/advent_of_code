@@ -48,12 +48,15 @@ class Chamber:
         self.rocks = [
             Rock(form="####\n"),
             Rock(form=".#.\n###\n.#.\n"),
-            Rock(form="..#\n..#\n###\n"),
+            Rock(form="###\n..#\n..#\n"),
             Rock(form="##\n##\n")]
         self.jets_of_hot_gas = read_data(path=input_data_path)
         self.data = []
         self.current_rock_index = 0
         self.current_rock_points = None
+        self.current_jet_index = 0
+        self.n_rocks = 0
+        self.n_rested = 0
 
     def print_chamber(self):
         for i in range(len(self.data) - 1, -1, -1):
@@ -62,9 +65,9 @@ class Chamber:
                 # if (number, i) in self.current_rock_points:
                 #    line_str += " @ "
                 if number > 0:
-                    line_str += " # "
+                    line_str += "#"
                 else:
-                    line_str += " . "
+                    line_str += "."
             line_str = "|" + line_str + "|"
             print(line_str)
         print("+---------------------+")
@@ -75,6 +78,7 @@ class Chamber:
          units above the highest rock in the room (or the floor, if there isn't one).
         :return:
         """
+        self.n_rocks += 1
         self.current_rock_points = None
         data = []
         # re remove all rows with only zeros:
@@ -116,13 +120,15 @@ class Chamber:
         # we check if it can move down here
         for x, y in self.current_rock_points:
             if y - 1 < 0 or (self.data[y - 1][x] != 0 and (x, y - 1) not in self.current_rock_points):
+                self.n_rested += 1
+                self.spawn_rock()
                 return
 
         # just move all points down
-        for x, y in [(x, y) for x, y in self.current_rock_points]:
+        for x, y in self.current_rock_points:
             self.data[y][x] = 0
-        for x, y in [(x, y - 1) for x, y in self.current_rock_points]:
-            self.data[y][x] = 1
+        for x, y in self.current_rock_points:
+            self.data[y-1][x] = 1
         self.current_rock_points = set([(x, y - 1) for x, y in self.current_rock_points])
 
     def move_rock_left(self):
@@ -133,10 +139,10 @@ class Chamber:
                 return
 
         # just move all points left
-        for x, y in [(x, y) for x, y in self.current_rock_points]:
+        for x, y in self.current_rock_points:
             self.data[y][x] = 0
-        for x, y in [(x - 1, y) for x, y in self.current_rock_points]:
-            self.data[y][x] = 1
+        for x, y in self.current_rock_points:
+            self.data[y][x-1] = 1
         self.current_rock_points = set([(x - 1, y) for x, y in self.current_rock_points])
 
     def move_rock_right(self):
@@ -146,23 +152,38 @@ class Chamber:
                 return
 
         # just move all points left
-        for x, y in [(x, y) for x, y in self.current_rock_points]:
+        for x, y in self.current_rock_points:
             self.data[y][x] = 0
-        for x, y in [(x + 1, y) for x, y in self.current_rock_points]:
-            self.data[y][x] = 1
+        for x, y in self.current_rock_points:
+            self.data[y][x+1] = 1
         self.current_rock_points = set([(x + 1, y) for x, y in self.current_rock_points])
 
     def run(self):
-        pass
+        self.spawn_rock()
+        gets_pushed = True
+        while self.n_rested < 2022:
+            if gets_pushed:
+                if self.jets_of_hot_gas[self.current_jet_index] > 0:
+                    self.move_rock_right()
+                else:
+                    self.move_rock_left()
+                self.current_jet_index += 1
+                if self.current_jet_index >= len(self.jets_of_hot_gas):
+                    self.current_jet_index = 0
+            else:
+                self.move_rock_down()
+            gets_pushed = not gets_pushed
+
+        return len(self.data)
 
 
-def day_17_task_1_example():
+def play():
     chamber = Chamber(input_data_path="data/day_17_example.txt", vertical_chamber_wide=7)
 
     chamber.spawn_rock()
     chamber.print_chamber()
     while True:
-        arg = input(":")
+        arg = input("input:")
         if arg == "s":
             chamber.move_rock_down()
         elif arg == "d":
@@ -177,5 +198,12 @@ def day_17_task_1_example():
         chamber.print_chamber()
 
 
+def day_17_task_1_example():
+    chamber = Chamber(input_data_path="data/day_17_example.txt", vertical_chamber_wide=7)
+    chamber.run()
+    chamber.print_chamber()
+    return len(chamber.data)
+
+
 if __name__ == '__main__':
-    day_17_task_1_example()
+    print(day_17_task_1_example())
