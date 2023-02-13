@@ -59,9 +59,9 @@ class Chamber:
         for i in range(len(self.data) - 1, -1, -1):
             line_str = ""
             for number in self.data[i]:
-                if (number, i) in self.current_rock_points:
-                    line_str += " @ "
-                elif number > 0:
+                # if (number, i) in self.current_rock_points:
+                #    line_str += " @ "
+                if number > 0:
                     line_str += " # "
                 else:
                     line_str += " . "
@@ -89,13 +89,12 @@ class Chamber:
         r = self.rocks[self.current_rock_index]
         m, n = r.array.shape
         rock_positions = set()
-        print(r.array)
         for i in range(m):
             line = [0, 0]
             for j in range(n):
                 if r.array[i][j] != 0:
                     rx = j + 2
-                    ry = len(self.data) + m - 3
+                    ry = len(self.data)
                     line.append(1)
                     rock_positions.add((rx, ry))
                 else:
@@ -113,53 +112,45 @@ class Chamber:
         If a downward movement would cause a falling rock to move into the floor or an already-fallen rock,
         the falling rock stops where it is (having landed on something) and a new rock immediately begins falling.
         """
-        if any(map(lambda e: e[1] - 1 < 0, self.current_rock_points)):
-            return
 
-        new_rock_points = set()
-        new_data = self.data
+        # we check if it can move down here
         for x, y in self.current_rock_points:
-            if (x, y - 1) not in self.current_rock_points and new_data[y - 1][x] != 0:
+            if y - 1 < 0 or (self.data[y - 1][x] != 0 and (x, y - 1) not in self.current_rock_points):
                 return
-            print("!!", (x, y - 1), new_data,)
 
-            new_rock_points.add((x, y - 1))
-            new_data[y][x] = 0
-            new_data[y - 1][x] = 1
-        print("\n")
-        self.current_rock_points = new_rock_points
-        self.data = new_data
+        # just move all points down
+        for x, y in [(x, y) for x, y in self.current_rock_points]:
+            self.data[y][x] = 0
+        for x, y in [(x, y - 1) for x, y in self.current_rock_points]:
+            self.data[y][x] = 1
+        self.current_rock_points = set([(x, y - 1) for x, y in self.current_rock_points])
 
     def move_rock_left(self):
-        if any(map(lambda e: e[0] - 1 < 0, self.current_rock_points)):
-            return
-        new_rock_points = set()
-        new_data = self.data
-        for x, y in sorted(list(self.current_rock_points)):
-            new_position = (x - 1, y)
-            if new_position not in self.current_rock_points and new_data[y][x - 1] != 0:
+
+        # we check if it can move down here
+        for x, y in self.current_rock_points:
+            if x - 1 < 0 or (self.data[y][x - 1] != 0 and (x - 1, y) not in self.current_rock_points):
                 return
-            new_rock_points.add(new_position)
-            new_data[y][x] = 0
-            new_data[y][x - 1] = 1
-        self.current_rock_points = new_rock_points
-        self.data = new_data
+
+        # just move all points left
+        for x, y in [(x, y) for x, y in self.current_rock_points]:
+            self.data[y][x] = 0
+        for x, y in [(x - 1, y) for x, y in self.current_rock_points]:
+            self.data[y][x] = 1
+        self.current_rock_points = set([(x - 1, y) for x, y in self.current_rock_points])
 
     def move_rock_right(self):
-        for x, _ in self.current_rock_points:
-            if x + 1 >= self.wide:
+        # we check if it can move down here
+        for x, y in self.current_rock_points:
+            if x + 1 >= self.wide or (self.data[y][x + 1] != 0 and (x + 1, y) not in self.current_rock_points):
                 return
-        new_rock_points = set()
-        new_data = self.data
-        for x, y in sorted(list(self.current_rock_points), reverse=True):
-            new_position = (x + 1, y)
-            if new_position not in self.current_rock_points and new_data[y][x + 1] != 0:
-                return
-            new_rock_points.add(new_position)
-            new_data[y][x] = 0
-            new_data[y][x + 1] = 1
-        self.current_rock_points = new_rock_points
-        self.data = new_data
+
+        # just move all points left
+        for x, y in [(x, y) for x, y in self.current_rock_points]:
+            self.data[y][x] = 0
+        for x, y in [(x + 1, y) for x, y in self.current_rock_points]:
+            self.data[y][x] = 1
+        self.current_rock_points = set([(x + 1, y) for x, y in self.current_rock_points])
 
     def run(self):
         pass
@@ -169,23 +160,21 @@ def day_17_task_1_example():
     chamber = Chamber(input_data_path="data/day_17_example.txt", vertical_chamber_wide=7)
 
     chamber.spawn_rock()
-    chamber.move_rock_down()
-    chamber.move_rock_down()
-    chamber.move_rock_down()
     chamber.print_chamber()
-    chamber.spawn_rock()
-    chamber.print_chamber()
-    chamber.print_chamber()
-    chamber.move_rock_right()
-    chamber.print_chamber()
-    chamber.move_rock_right()
-    chamber.print_chamber()
-
-
-
-
-
-    print(np.array(chamber.data))
+    while True:
+        arg = input(":")
+        if arg == "s":
+            chamber.move_rock_down()
+        elif arg == "d":
+            chamber.move_rock_right()
+        elif arg == "a":
+            chamber.move_rock_left()
+        elif arg == "w":
+            chamber.spawn_rock()
+        else:
+            break
+        print(chamber.current_rock_points)
+        chamber.print_chamber()
 
 
 if __name__ == '__main__':
