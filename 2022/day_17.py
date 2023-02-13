@@ -75,7 +75,7 @@ class Chamber:
          units above the highest rock in the room (or the floor, if there isn't one).
         :return:
         """
-
+        self.current_rock_points = None
         data = []
         # re remove all rows with only zeros:
         for i in range(len(self.data)):
@@ -89,11 +89,17 @@ class Chamber:
         r = self.rocks[self.current_rock_index]
         m, n = r.array.shape
         rock_positions = set()
+        print(r.array)
         for i in range(m):
             line = [0, 0]
             for j in range(n):
-                line.append(r.array[i][j])
-                rock_positions.add((j + 2, len(self.data) + m - 1))
+                if r.array[i][j] != 0:
+                    rx = j + 2
+                    ry = len(self.data) + m - 3
+                    line.append(1)
+                    rock_positions.add((rx, ry))
+                else:
+                    line.append(0)
             while len(line) < self.wide:
                 line.append(0)
             self.data.append(line)
@@ -107,29 +113,22 @@ class Chamber:
         If a downward movement would cause a falling rock to move into the floor or an already-fallen rock,
         the falling rock stops where it is (having landed on something) and a new rock immediately begins falling.
         """
-        invalid_move = False
-
         if any(map(lambda e: e[1] - 1 < 0, self.current_rock_points)):
-            invalid_move = True
+            return
 
-        if not invalid_move:
-            new_rock_points = set()
-            new_data = self.data
-            for x, y in self.current_rock_points:
-                if (x, y - 1) not in self.current_rock_points and new_data[y - 1][x] != 0:
-                    invalid_move = True
-                    break
-                new_rock_points.add((x, y - 1))
-                new_data[y][x] = 0
-                new_data[y - 1][x] = 1
+        new_rock_points = set()
+        new_data = self.data
+        for x, y in self.current_rock_points:
+            if (x, y - 1) not in self.current_rock_points and new_data[y - 1][x] != 0:
+                return
+            print("!!", (x, y - 1), new_data,)
 
-            if not invalid_move:
-                self.current_rock_points = new_rock_points
-                self.data = new_data
-            else:
-                self.spawn_rock()
-        else:
-            self.spawn_rock()
+            new_rock_points.add((x, y - 1))
+            new_data[y][x] = 0
+            new_data[y - 1][x] = 1
+        print("\n")
+        self.current_rock_points = new_rock_points
+        self.data = new_data
 
     def move_rock_left(self):
         if any(map(lambda e: e[0] - 1 < 0, self.current_rock_points)):
@@ -168,14 +167,25 @@ class Chamber:
 
 def day_17_task_1_example():
     chamber = Chamber(input_data_path="data/day_17_example.txt", vertical_chamber_wide=7)
+
+    chamber.spawn_rock()
+    chamber.move_rock_down()
+    chamber.move_rock_down()
+    chamber.move_rock_down()
+    chamber.print_chamber()
     chamber.spawn_rock()
     chamber.print_chamber()
+    chamber.print_chamber()
+    chamber.move_rock_right()
+    chamber.print_chamber()
+    chamber.move_rock_right()
+    chamber.print_chamber()
 
-    for _ in range(20):
-        chamber.move_rock_down()
-        chamber.print_chamber()
 
-    print(chamber.data)
+
+
+
+    print(np.array(chamber.data))
 
 
 if __name__ == '__main__':
