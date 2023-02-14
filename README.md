@@ -9,11 +9,17 @@ See https://adventofcode.com/.
 
 ### 2022 - Day 12 - Hill Climbing Algorithm - Visualization
 <p align="center">
-<img src="doc/day_12_plot.PNG"  width="60%" height="30%">
+    <img src="doc/day_12_plot.PNG"  width="60%" height="30%">
 </p>
 
 
 ### 2022 - Day 14 - Sand Waterfall - Visualization
 <p align="center">
-<img src="doc/day_14_plot.PNG"  width="60%" height="30%">
+    <img src="doc/day_14_plot.PNG"  width="60%" height="30%">
+</p>
+
+
+### 2022 - Day 18 - Boiling Boulders- Visualization
+<p align="center">
+    <img src="doc/day_18_plot.PNG"  width="60%" height="30%">
 </p>
