@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from collections import deque
+from functools import cache
 
 
 def read_data(path):
@@ -48,6 +50,41 @@ def day_18_task_1(make_plot=False):
     return count_not_immediately_connected_sides(cubes)
 
 
+cubes = read_data(path="data/day_18.txt")
+cube_set = set(map(tuple, cubes))
+k = np.amax(cubes)
+neighbours = [(1, 0, 0), (0, 1, 0), (0, 0, 1), (-1, 0, 0), (0, -1, 0), (0, 0, -1)]
+
+
+@cache
+def is_reachable_by_water(cube) -> bool:
+    queue = deque([cube])
+    already_checked = set()
+    while queue:
+        cube = x, y, z = queue.pop()
+        if cube in already_checked:
+            continue
+        already_checked.add(cube)
+        if cube in cube_set:
+            continue
+        if any(map(lambda e: e < 0 or e > k, cube)):
+            return True
+        for (a, b, c) in neighbours:
+            queue.append((x + a, y + b, z + c))
+    return False
+
+
+def day_18_task_2():
+    result = 0
+    for (x, y, z) in cubes:
+        for (a, b, c) in neighbours:
+            cube = (x + a, y + b, z + c)
+            if is_reachable_by_water(cube):
+                result += 1
+    return result
+
+
 if __name__ == '__main__':
-    assert day_18_example(make_plot=True) == 64
+    assert day_18_example() == 64
     assert day_18_task_1() == 4474
+    assert day_18_task_2() == 2518
