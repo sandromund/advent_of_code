@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
 
@@ -14,7 +13,7 @@ def read_data(path):
 
 def plot_3d(array):
     k = np.amax(array)
-    axes = [k+1]*3
+    axes = [k + 1] * 3
     data = np.zeros(axes, dtype=bool)
     for (x, y, z) in array:
         data[x][y][z] = True
@@ -24,10 +23,31 @@ def plot_3d(array):
     plt.show()
 
 
-def day_18_example():
+def count_not_immediately_connected_sides(cubes):
+    cube_set = set(map(tuple, cubes))
+    neighbours = [(1, 0, 0), (0, 1, 0), (0, 0, 1), (-1, 0, 0), (0, -1, 0), (0, 0, -1)]
+    k = 0  # not immediately connected to another cube
+    for (x, y, z) in cubes:
+        for (a, b, c) in neighbours:
+            if (x + a, y + b, z + c) not in cube_set:
+                k += 1
+    return k
+
+
+def day_18_example(make_plot=False):
+    cubes = read_data(path="data/day_18_example.txt")
+    if make_plot:
+        plot_3d(cubes)
+    return count_not_immediately_connected_sides(cubes)
+
+
+def day_18_task_1(make_plot=False):
     cubes = read_data(path="data/day_18.txt")
-    plot_3d(cubes)
+    if make_plot:
+        plot_3d(cubes)
+    return count_not_immediately_connected_sides(cubes)
 
 
 if __name__ == '__main__':
-    day_18_example()
+    assert day_18_example(make_plot=True) == 64
+    assert day_18_task_1() == 4474
