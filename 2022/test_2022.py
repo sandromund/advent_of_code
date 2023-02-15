@@ -14,10 +14,10 @@ class TestDays(unittest.TestCase):
         self.assertEqual(day_1_task_2(), 211805)
 
     def test_day_2_task_1(self):
-        self.assertEqual(day_2_task_1(), 7990)
+        self.assertEqual(day_2_task_1(), 13221)
 
     def test_day_2_task_2(self):
-        self.assertEqual(day_2_task_2(), 2602)
+        self.assertEqual(day_2_task_2(), 13131)
 
     def test_day_3_task_1(self):
         self.assertEqual(day_3_task_1(), 7990)

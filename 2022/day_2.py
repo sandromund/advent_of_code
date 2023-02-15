@@ -71,5 +71,5 @@ def day_2_task_2():
 
 
 if __name__ == '__main__':
-    print(day_2_task_1())  # --> 7990
-    print(day_2_task_2())  # --> 2602
+    print(day_2_task_1())
+    print(day_2_task_2())
