@@ -11,7 +11,7 @@ def day_3_task_1():
         left, right = line[:split], line[split:]
         e = list(set(list(left)).intersection(list(right)))[0]
         result += priorities(e)
-    print(result)
+    return result
 
 
 def day_3_task_2():
@@ -23,7 +23,7 @@ def day_3_task_2():
             e = list(group_items[0] & group_items[1] & group_items[2])[0]
             result += priorities(e)
             group_items = []
-    print(result)
+    return result
 
 
 if __name__ == '__main__':

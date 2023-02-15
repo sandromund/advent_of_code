@@ -24,7 +24,9 @@ def get_game_points(enemy_hand, my_hand):
     return 6  # "Win"
 
 
-def day_2_task_1(lines):
+def day_2_task_1():
+    with open('data/day2.txt', 'r') as fin:
+        lines = fin.readlines()
     points_sum = 0
     for line in lines:
         h1 = mapper[line[0]]
@@ -49,7 +51,9 @@ def get_losing_hand(hand):
     return order[loser_index]
 
 
-def day_2_task_2(lines):
+def day_2_task_2():
+    with open('data/day2.txt', 'r') as fin:
+        lines = fin.readlines()
     points_sum = 0
     for line in lines:
         h1 = mapper[line[0]]
@@ -67,7 +71,5 @@ def day_2_task_2(lines):
 
 
 if __name__ == '__main__':
-    with open('data/day2.txt', 'r') as fin:
-        file_lines = fin.readlines()
-    print(day_2_task_1(file_lines))  # --> 7990
-    print(day_2_task_2(file_lines))  # --> 2602
+    print(day_2_task_1())  # --> 7990
+    print(day_2_task_2())  # --> 2602
