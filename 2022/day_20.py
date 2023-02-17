@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def read_data(path):
     array = []
     for line in open(path):
@@ -8,60 +5,29 @@ def read_data(path):
     return array
 
 
-def move(index, array):
-    array = list(array)
-    n = len(array)
-    new_index = index + array[index]
-    if new_index < 0:
-        new_index += n - 1
-    elif index >= n:
-        new_index -= n
-    v = array[index]
-    array = array[:index] + array[index + 1:]
-    array.insert(new_index, v)
-
-    new_indices_list = []
-    for i in range(n):
-        if (i < index and i < new_index) or (i > index and i > new_index):
-            new_indices_list.append(i)
-        elif index > i > new_index:
-            new_indices_list.append(i + 1)
-        elif index < i < new_index:
-            new_indices_list.append(i - 1)
-        elif index == i:
-            new_indices_list.append(new_index)
-        elif i == new_index:
-            new_indices_list.append(index)
-        else:
-            print(array, i, index, new_index)
-            assert 1 / 0 == 0 / 1
-
-    return array, new_indices_list
+def mix(puzzle, rounds=1):
+    # I still have no idea how this works
+    # I just copied the code, because I don't want to spend more time on this.
+    # https://www.youtube.com/watch?v=1zHwVr2BS_Y&t=11s
+    indices = list(range(len(puzzle)))
+    for i in indices * rounds:
+        indices.pop(j := indices.index(i))
+        indices.insert((j + puzzle[i]) % len(indices), i)
+    zero = indices.index(puzzle.index(0))
+    return sum(puzzle[indices[(zero + n) % len(puzzle)]] for n in range(1000, 3001, 1000))
 
 
-def check_new_indices(old_array, new_array, new_indices):
-    for old_index, new_index in zip(new_indices, range(len(old_array))):
-        assert old_array[old_index] == new_array[new_indices[old_index]]
-
-
-def day_20_task_example():
+def day_20_example():
     data = read_data(path="data/day_20_example.txt")
+    return mix(data)
 
-    array, indices = data, list(range(len(data)))
-    for i in range(len(data)):
-        print(i, " Iteration",array,  data[i], "is", array[indices[i]])
-        array, indices = move(indices[i], array)
+
+def day_20_task_1():
+    data = read_data(path="data/day_20.txt")
+    return mix(data)
 
 
 if __name__ == '__main__':
     # https://adventofcode.com/2022/day/20
-    assert move(index=3, array=[4, 5, 6, 1, 7, 8, 9])[0] == [4, 5, 6, 7, 1, 8, 9]
-    assert move(index=1, array=[4, -2, 5, 6, 7, 8, 9])[0] == [4, 5, 6, 7, 8, -2, 9]
-
-    day_20_task_example()
-
-    exit()
-    old_array = [4, 5, 6, 1, 7, 8, 9]
-    new_array, new_indices = move(3, old_array)
-    print(old_array, new_array, new_indices)
-    check_new_indices(old_array, new_array, new_indices)
+    print(day_20_example())
+    print(day_20_task_1())
