@@ -66,4 +66,4 @@ if __name__ == '__main__':
     assert is_nice_new_rules(data_string="uurcxstgmygtbstg") is False
     assert is_nice_new_rules(data_string="ieodomkazucvgmuy") is False
 
-    assert 53 == day_5_task_2(data=data_day_5))
+    assert 53 == day_5_task_2(data=data_day_5)
