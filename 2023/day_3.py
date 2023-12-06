@@ -10,10 +10,10 @@ def find_numbers(data):
     -> [{'number_start_index': 0, 'number_row_index': 0, 'number_value_string': '467'}, ... ]
     """
     result = []
-    number_start_index = None
-    number_row_index = None
-    number_value_string = None
     for row_i in range(len(data)):
+        number_start_index = None
+        number_row_index = None
+        number_value_string = None
         for col_i in range(len(data[0])):
             element = data[row_i][col_i]
             if str(element).isdigit():
@@ -33,6 +33,12 @@ def find_numbers(data):
                     number_start_index = None
                     number_row_index = None
                     number_value_string = None
+        if number_start_index is not None:
+            result.append({
+                "number_start_index": number_start_index,
+                "number_row_index": number_row_index,
+                "number_value_string": number_value_string
+            })
     return result
 
 
@@ -96,27 +102,19 @@ if __name__ == '__main__':
     symbols = get_all_symbols(data_day_3)
     result_day_3_task_1 = day_3_task_1(data_day_3, symbols)
 
-    print(result_day_3_task_1)  # wrong 1296294
-
+    assert result_day_3_task_1 == 544664
     assert day_3_task_1([list("....877*..")], symbols) == 877
     assert day_3_task_1([list("....*877..")], symbols) == 877
-    assert day_3_task_1([list("....*....."),
-                         list(".....877..")], symbols) == 877
-    assert day_3_task_1([list(".....877.."),
-                         list("....*.....")], symbols) == 877
-    assert day_3_task_1([list("........*."),
-                         list(".....877..")], symbols) == 877
-    assert day_3_task_1([list(".....877.."),
-                         list("........*.")], symbols) == 877
-
+    assert day_3_task_1([list("....*....."), list(".....877..")], symbols) == 877
+    assert day_3_task_1([list(".....877.."), list("....*.....")], symbols) == 877
+    assert day_3_task_1([list("........*."), list(".....877..")], symbols) == 877
+    assert day_3_task_1([list(".....877.."), list("........*.")], symbols) == 877
     assert day_3_task_1([list("....877*3.")], symbols) == 880
     assert day_3_task_1([list("...3*877..")], symbols) == 880
-    assert day_3_task_1([list("...3*....."),
-                         list(".....877..")], symbols) == 880
-    assert day_3_task_1([list(".....877.."),
-                         list("...3*.....")], symbols) == 880
-    assert day_3_task_1([list("........*3"),
-                         list(".....877..")], symbols) == 880
-    assert day_3_task_1([list(".....877.."),
-                         list("........*3")], symbols) == 880
-
+    assert day_3_task_1([list("...3*....."), list(".....877..")], symbols) == 880
+    assert day_3_task_1([list(".....877.."), list("...3*.....")], symbols) == 880
+    assert day_3_task_1([list("........*3"), list(".....877..")], symbols) == 880
+    assert day_3_task_1([list(".....877.."), list("........*3")], symbols) == 880
+    assert day_3_task_1([list("3*3*3*3")], symbols) == 12
+    assert day_3_task_1([list("*3*3*3*3"), list("*3*3*3*3")], symbols) == 24
+    assert day_3_task_1([list("3*3*3*3"), list("3*3*3*3")], symbols) == 24
