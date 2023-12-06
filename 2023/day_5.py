@@ -1,3 +1,6 @@
+import logging
+
+
 def get_data(path):
     result = {}
     mapping = None
@@ -38,7 +41,7 @@ def apply_mapping(number, mappings):
         s = m["source_range_start"]
         l = m["range_length"]
         d = m["destination_range_start"]
-        if s <= number <= s + l:
+        if s <= number < s + l:
             result = number + d - s
     return result
 
@@ -61,7 +64,7 @@ def day_5_task_1(data):
     return min(results)
 
 
-if __name__ == '__main__':
+def task_1():
     data_demo = get_data("data/day_5_demo.txt")
 
     assert apply_mapping(number=79, mappings=data_demo["seed-to-soil"]) == 81
@@ -77,3 +80,45 @@ if __name__ == '__main__':
     result_day_5_task_1 = day_5_task_1(data_day_5)
 
     assert result_day_5_task_1 == 424490994
+    return 424490994
+
+
+def transform_seed(seed):
+    seeds = []
+    assert len(seed) % 2 == 0
+    for i in range(0, len(seed), 2):
+        start = seed[i]
+        end = start + seed[i + 1]
+        seeds += list(range(start, end))
+    return seeds
+
+
+def day_5_task_2(data, seeds):
+    seeds = list(set(seeds))
+    results = []
+    for number in seeds:
+        for mapping_name in ['seed-to-soil',
+                             'soil-to-fertilizer',
+                             'fertilizer-to-water',
+                             'water-to-light',
+                             'light-to-temperature',
+                             'temperature-to-humidity',
+                             'humidity-to-location']:
+            number = apply_mapping(number, mappings=data[mapping_name])
+        results.append(number)
+    return min(results)
+
+
+if __name__ == '__main__':
+    data_demo = get_data("data/day_5_demo.txt")
+    data_day_5 = get_data("data/day_5.txt")
+
+    assert len(transform_seed(seed=data_demo["seeds"])) == 27
+
+    result_day_5_task_2_demo = day_5_task_2(data_demo, seeds=transform_seed(seed=data_demo["seeds"]))
+
+    assert result_day_5_task_2_demo == 46
+    print(len(transform_seed(seed=data_day_5["seeds"])))
+
+    #result_day_5_task_2 = day_5_task_2(data_day_5, seeds=transform_seed(seed=data_day_5["seeds"]))
+    #print(result_day_5_task_2)
