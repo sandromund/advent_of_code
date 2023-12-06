@@ -1,4 +1,4 @@
-def get_data(path) -> dict[list[dict[str, int]]]:
+def get_data(path):
     """
     -> {1: [{'blue': 3, 'red': 4}, {'red': 1, 'green': 2, 'blue': 6}, {'green': 2}], ...
     """
@@ -35,18 +35,40 @@ def day2_task_1(data, limits):
     return result
 
 
+def power_of_set(draws, colors):
+    result = 1
+    for color in colors:
+        color_max = None
+        # game_round = {'blue': 3, 'red': 4}
+        for game_round in draws:
+            if game_round.get(color) is not None:
+                if color_max is None or color_max < game_round.get(color):
+                    color_max = game_round.get(color)
+        result *= color_max
+    return result
+
+
+def day_2_task_2(data, colors):
+    result = 0
+    for game_id, draws in data.items():
+        if power_of_set(draws, colors):
+            result += power_of_set(draws, colors)
+    return result
+
+
 if __name__ == '__main__':
-    """
-    The Elf would first like to know which games would have been possible if the bag contained only 12 red cubes, 
-    13 green cubes, and 14 blue cubes?
-    """
     result_day_2_example = day2_task_1(data=get_data(path="data/day_2_demo.txt"),
                                        limits={"red": 12, "green": 13, "blue": 14})
+    assert result_day_2_example == 8
 
     result_day_2_task_1 = day2_task_1(data=get_data(path="data/day_2.txt"),
-                                       limits={"red": 12, "green": 13, "blue": 14})
-
-    assert result_day_2_example == 8
+                                      limits={"red": 12, "green": 13, "blue": 14})
     assert result_day_2_task_1 == 2810
 
+    result_day_2_task_2_example = day_2_task_2(data=get_data(path="data/day_2_demo.txt"),
+                                               colors=["blue", "red", "green"])
+    assert result_day_2_task_2_example == 2286
 
+    result_day_2_task_2 = day_2_task_2(data=get_data(path="data/day_2.txt"),
+                                       colors=["blue", "red", "green"])
+    assert result_day_2_task_2 == 69110
