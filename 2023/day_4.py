@@ -26,8 +26,35 @@ def day_4_task_1(data):
     return result
 
 
-if __name__ == '__main__':
+def task_1():
     data_demo = read_data("data/day_4_demo.txt")
     assert day_4_task_1(data_demo) == 13
     data_day_4 = read_data("data/day_4.txt")
     assert day_4_task_1(data_day_4) == 23441
+    return 23441
+
+
+def day_4_task_2(data):
+    result = {}
+    for card in data:
+        card["matching_numbers"] = len(set(card["winning_numbers"]).intersection(set(card["drawn_numbers"])))
+        card["instances"] = 1
+    for card in data:
+        while card["instances"] > 0:
+            for k in range(card["matching_numbers"]):
+                index = card["card_nr"]
+                data[index + k]["instances"] += 1
+
+            card["instances"] -= 1
+            if result.get(card["card_nr"]) is None:
+                result[card["card_nr"]] = 0
+            result[card["card_nr"]] += 1
+    return sum(result.values())
+
+
+if __name__ == '__main__':
+    result_day_4_task_2_demo = day_4_task_2(read_data("data/day_4_demo.txt"))
+    assert result_day_4_task_2_demo == 30
+
+    result_day_4_task_2 = day_4_task_2(read_data("data/day_4.txt"))
+    assert result_day_4_task_2 == 5923918
