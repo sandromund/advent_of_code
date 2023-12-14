@@ -89,18 +89,34 @@ def p(data):
 
 
 def day_14_task_2(data):
-    p(data)
+    s = set()
     n_cycles = 1_000_000_000
-    for i in tqdm(range(n_cycles)):
+    for i in range(n_cycles):
         data = iterate_cycle(data)
+        print(i, score(data), len(s), hash(str(data)))
+        if str(data) in s:
+            break
+        s.add(str(data))
     return score(data)
 
 
 if __name__ == '__main__':
-    data_data_14_demo = read_data(path="data/day_14_demo.txt")
+    #data_data_14_demo = read_data(path="data/day_14_demo.txt")
     # assert day_14_task_1(data_data_14_demo) == 136
     # data_data_14 = read_data(path="data/day_14.txt")
     # assert day_14_task_1(data_data_14) == 109385
 
 
-    day_14_task_2(data_data_14_demo)
+    day_14_task_2(read_data(path="data/day_14.txt"))
+
+
+    n_cycles = 1_000_000_000
+
+    begin_cycle  = 102
+    end_cycle = 140 +1
+    len_cycle = end_cycle - begin_cycle
+
+    print((n_cycles- begin_cycle) %  len_cycle)
+
+    # to high 93178
+    # to low 92849
